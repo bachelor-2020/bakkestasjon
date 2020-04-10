@@ -1,7 +1,9 @@
 
-var cities = L.layerGroup()
+var waypoints = L.layerGroup()
+var drones = L.layerGroup()
 
-L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities)
+L.marker([59.368750, 10.442077]).bindTooltip('Her er kantina').addTo(waypoints)
+L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
 
 
 var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -13,9 +15,9 @@ var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, 
 	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
 
 var map = L.map('map', {
-	center: [39.73, -104.99],
-	zoom: 10,
-	layers: [satellite, cities]
+	center: [59.368750, 10.442077],
+	zoom: 15,
+	layers: [satellite, waypoints, drones]
 })
 
 var baseLayers = {
@@ -24,7 +26,8 @@ var baseLayers = {
 }
 
 var overlays = {
-	"Cities": cities
+	"Waypoints": waypoints,
+	"Drones": drones
 }
 
 // Initialise the FeatureGroup to store editable layers
