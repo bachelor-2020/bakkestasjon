@@ -30,10 +30,6 @@ var overlays = {
 	"Drones": drones
 }
 
-// Initialise the FeatureGroup to store editable layers
-var editableLayers = new L.FeatureGroup()
-map.addLayer(editableLayers)
-
 L.control.layers(baseLayers, overlays).addTo(map)
 var options = {
 	position: 'topleft',
@@ -57,13 +53,9 @@ var options = {
 		// disable toolbar item by setting it to false
 		polyline: false,
 		circle: false, // Turns off this drawing tool
-		polygon: true,
-		marker: true,
+		polygon: false,
+		marker: false,
 		rectangle: true,
-	},
-	edit: {
-		featureGroup: editableLayers, //REQUIRED!!
-		remove: true
 	}
 }
 
@@ -76,5 +68,10 @@ map.on('draw:created', function(e) {
 	var layer = e.layer
 
 
-	editableLayers.addLayer(layer)
+	layer.editing.enable()
+	layer.on("edit", function(l) {
+		alert('Something was edited')
+	})
+
+	map.addLayer(layer)
 })
