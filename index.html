@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Drone kontroll</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" rel="stylesheet" />
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		#map {
+			width: 100%;
+			height: 100%;
+			margin: 0 auto;
+		}
+	</style>
+
+	
+</head>
+<body>
+
+<div id='map'></div>
+
+<script>
+	var cities = L.layerGroup();
+
+	L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities),
+	L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.').addTo(cities),
+	L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.').addTo(cities),
+	L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.').addTo(cities);
+
+
+	var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+	var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+	var map = L.map('map', {
+		center: [39.73, -104.99],
+		zoom: 10,
+		layers: [satellite, cities]
+	});
+
+	var baseLayers = {
+		"Satellite": satellite,
+		"Streets": streets
+	};
+
+	var overlays = {
+		"Cities": cities
+	};
+
+	// Initialise the FeatureGroup to store editable layers
+	var editableLayers = new L.FeatureGroup();
+	map.addLayer(editableLayers);
+
+	L.control.layers(baseLayers, overlays).addTo(map);
+	var options = {
+  position: 'topleft',
+  draw: {
+    polygon: {
+      allowIntersection: false, // Restricts shapes to simple polygons
+      drawError: {
+        color: '#e1e100', // Color the shape will turn when intersects
+        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+      },
+      shapeOptions: {
+        color: '#97009c'
+      }
+    },
+    polyline: {
+    	shapeOptions: {
+        color: '#f357a1',
+        weight: 10
+          }
+    },
+    // disable toolbar item by setting it to false
+    polyline: true,
+    circle: true, // Turns off this drawing tool
+    polygon: true,
+    marker: true,
+    rectangle: true,
+  },
+  edit: {
+    featureGroup: editableLayers, //REQUIRED!!
+    remove: true
+  }
+};
+
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var drawControl = new L.Control.Draw(options);
+map.addControl(drawControl);
+
+map.on('draw:created', function(e) {
+  var type = e.layerType,
+    layer = e.layer;
+
+	e.on("click", (e) => {
+  let i = 0,
+    start = {},
+    end = {}
+  const verts = e.target.getLatLngs() // verts...vertices of polyline
+
+  //Loop through vertices while there is one at index i + 1
+  while (verts[i + 1]) {
+    //belongsSegment returns a Boolean
+    const segmentFound = L.GeometryUtil.belongsSegment(e.latlng, verts[i], verts[i+1])
+    if (segmentFound) {
+      start = verts[i]
+      end = verts[i + 1]
+		alert(`${start}, ${end}`)
+      break
+    }
+    i++
+  }
+}); 
+
+  if (type === 'polyline') {
+    layer.bindPopup('A polyline!');
+  } else if ( type === 'polygon') {
+  	layer.bindPopup('A polygon!');
+  } else if (type === 'marker') 
+  {layer.bindPopup('marker!');}
+  else if (type === 'circle') 
+  {layer.bindPopup('A circle!');}
+   else if (type === 'rectangle') 
+  {layer.bindPopup('A rectangle!');}
+
+
+  editableLayers.addLayer(layer);
+});
+</script>
+
+
+
+</body>
+</html>
+
