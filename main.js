@@ -52,8 +52,8 @@ var options = {
 			}
 		},
 		// disable toolbar item by setting it to false
-		polyline: true,
-		circle: true, // Turns off this drawing tool
+		polyline: false,
+		circle: false, // Turns off this drawing tool
 		polygon: true,
 		marker: true,
 		rectangle: true,
@@ -71,22 +71,6 @@ map.addControl(drawControl)
 map.on('draw:created', function(e) {
 	var type = e.layerType
 	var layer = e.layer
-
-	if (type === 'polyline') {
-	    layer.bindPopup('A polyline!')
-	}
-	else if ( type === 'polygon') {
-	    layer.bindPopup('A polygon!')
-	}
-	else if (type === 'marker') {
-	    layer.bindPopup('marker!')
-	}
-	else if (type === 'circle') {
-	    layer.bindPopup('A circle!')
-	}
-	else if (type === 'rectangle') {
-	    layer.bindPopup('A rectangle!')
-	}
 
 
 	editableLayers.addLayer(layer)
