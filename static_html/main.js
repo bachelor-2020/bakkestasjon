@@ -50,12 +50,16 @@ var options = {
 				weight: 10
 			}
 		},
+		rectangle: {
+			shapeOptions: {
+				fill: false
+			}
+		},
 		// disable toolbar item by setting it to false
 		polyline: false,
 		circle: false, // Turns off this drawing tool
 		polygon: false,
 		marker: false,
-		rectangle: true,
 	}
 }
 
@@ -88,7 +92,7 @@ function survey(area) {
 		}
 	}
 
-	surv.addLayer(L.polyline(points))
+	surv.addLayer(L.polyline(points, {opacity: 0.5}))
 	return surv
 }
 
