@@ -62,15 +62,54 @@ var options = {
 // Initialise the draw control and pass it the FeatureGroup of editable layers
 var drawControl = new L.Control.Draw(options)
 map.addControl(drawControl)
+L.control.scale({imperial: false}).addTo(map);
+
+
+function survey(area) {
+	var surv = L.layerGroup()
+
+	var west = area.getWest()
+	var east = area.getEast()
+	var north = area.getNorth()
+	var south = area.getSouth()
+
+	var points = []
+	for (var i=0; north-i*0.001>south; i++) {
+		var p1 = [north-i*0.001, west]
+		var p2 = [north-i*0.001, east]
+
+		if (i%2==0) {
+			points.push(p1)
+			points.push(p2)
+		}
+		else {
+			points.push(p2)
+			points.push(p1)
+		}
+	}
+
+	surv.addLayer(L.polyline(points))
+	return surv
+}
 
 map.on('draw:created', function(e) {
 	var type = e.layerType
 	var layer = e.layer
 
+	if (type == "rectangle") {
+		var s = survey(layer.getBounds())
+		map.addLayer(s)
+		layer.childSurvey = s
+	}
+
 
 	layer.editing.enable()
-	layer.on("edit", function(l) {
-		alert('Something was edited')
+	layer.on("edit", function(E) {
+		console.log(E.target.getBounds())
+		console.log(E.target)
+		map.removeLayer(E.target.childSurvey)
+		E.target.childSurvey = survey(E.target.getBounds())
+		map.addLayer(E.target.childSurvey)
 	})
 
 	map.addLayer(layer)
