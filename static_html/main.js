@@ -130,3 +130,4 @@ map.on('draw:created', function(e) {
 
 	map.addLayer(layer)
 })
+navigator.geolocation.getCurrentPosition(position => alert(position.coords.latitude), error => alert(errror), {timeout: 10000})
