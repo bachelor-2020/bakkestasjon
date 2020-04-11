@@ -78,7 +78,8 @@ function survey(area) {
 	var south = area.getSouth()
 
 	var points = []
-	for (var i=0; north-i*0.001>south; i++) {
+	var i
+	for (i=0; north-i*0.001>south; i++) {
 		var p1 = [north-i*0.001, west]
 		var p2 = [north-i*0.001, east]
 
@@ -89,6 +90,17 @@ function survey(area) {
 		else {
 			points.push(p2)
 			points.push(p1)
+		}
+	}
+
+	if (p1[0] > south) {
+		if (i%2==0) {
+			points.push([south, west])
+			points.push([south, east])
+		}
+		else {
+			points.push([south,east])
+			points.push([south,west])
 		}
 	}
 
