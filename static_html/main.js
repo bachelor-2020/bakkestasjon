@@ -1,6 +1,7 @@
 
 var waypoints = L.layerGroup()
 var drones = L.layerGroup()
+var searchAreas = L.layerGroup()
 
 L.marker([59.368750, 10.442077]).bindTooltip('Her er kantina').addTo(waypoints)
 L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
@@ -17,7 +18,7 @@ var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, 
 var map = L.map('map', {
 	center: [59.368750, 10.442077],
 	zoom: 15,
-	layers: [satellite, waypoints, drones]
+	layers: [satellite, searchAreas, waypoints, drones]
 })
 
 var baseLayers = {
@@ -26,6 +27,7 @@ var baseLayers = {
 }
 
 var overlays = {
+	"Search Areas": searchAreas,
 	"Waypoints": waypoints,
 	"Drones": drones
 }
@@ -105,6 +107,7 @@ function survey(area) {
 	}
 
 	surv.addLayer(L.polyline(points, {opacity: 0.5}))
+	searchAreas.addLayer(surv)
 	return surv
 }
 
