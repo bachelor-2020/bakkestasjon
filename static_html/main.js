@@ -56,6 +56,7 @@ var options = {
 		polyline: false,
 		circle: false, // Turns off this drawing tool
 		marker: false,
+		circlemarker: false,
 	}
 }
 
