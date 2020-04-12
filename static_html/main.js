@@ -49,7 +49,7 @@ var options = {
 		},
 		rectangle: {
 			shapeOptions: {
-				fill: false
+				fill: true
 			}
 		},
 		// disable toolbar item by setting it to false
@@ -65,19 +65,24 @@ map.addControl(drawControl)
 L.control.scale({imperial: false}).addTo(map);
 
 
-function survey(area) {
-	var surv = L.layerGroup()
+function meter2deg(meter) {
+	return meter/111111
+}
 
-	var west = area.getWest()
-	var east = area.getEast()
-	var north = area.getNorth()
-	var south = area.getSouth()
+function survey(layer, trackWidth=5) {
+	var area = layer.getBounds()
+	var width = meter2deg(trackWidth)
+
+	var west = area.getWest() + width
+	var east = area.getEast() - width
+	var north = area.getNorth() - width/2
+	var south = area.getSouth() + width/2
 
 	var points = []
-	var i
-	for (i=0; north-i*0.001>south; i++) {
-		var p1 = [north-i*0.001, west]
-		var p2 = [north-i*0.001, east]
+	var i=0
+	for (var lat=north; lat>south; lat-=width) {
+		var p1 = [lat, west]
+		var p2 = [lat, east]
 
 		if (i%2==0) {
 			points.push(p1)
@@ -87,9 +92,10 @@ function survey(area) {
 			points.push(p2)
 			points.push(p1)
 		}
+		i++
 	}
 
-	if (p1[0] > south) {
+	if (p1[0] > south + meter2deg(0.1)) {
 		if (i%2==0) {
 			points.push([south, west])
 			points.push([south, east])
@@ -100,9 +106,11 @@ function survey(area) {
 		}
 	}
 
-	surv.addLayer(L.polyline(points, {opacity: 0.5}))
-	searchAreas.addLayer(surv)
-	return surv
+	var flightPattern = L.polyline(points, {opacity: 0.5, weight: 5})
+	flightPattern.parent = layer
+	flightPattern.on("click", function(e) { e.target.parent.editing.enable() })
+	searchAreas.addLayer(flightPattern)
+	layer.childSurvey = flightPattern
 }
 
 map.on('draw:created', function(e) {
@@ -110,19 +118,17 @@ map.on('draw:created', function(e) {
 	var layer = e.layer
 
 	if (type == "rectangle") {
-		var s = survey(layer.getBounds())
-		map.addLayer(s)
-		layer.childSurvey = s
+		survey(layer)
+		layer.on("edit", function(E) {
+			searchAreas.removeLayer(E.target.childSurvey)
+			survey(E.target)
+			E.target.editing.disable()
+		})
 	}
 
 
-	layer.editing.enable()
-	layer.on("edit", function(E) {
-		console.log(E.target.getBounds())
-		console.log(E.target)
-		map.removeLayer(E.target.childSurvey)
-		E.target.childSurvey = survey(E.target.getBounds())
-		map.addLayer(E.target.childSurvey)
+	layer.on("click", function(E) {
+		E.target.editing.enable()
 	})
 
 	map.addLayer(layer)
