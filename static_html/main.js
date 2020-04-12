@@ -43,13 +43,8 @@ var options = {
 				message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
 			},
 			shapeOptions: {
-				color: '#97009c'
-			}
-		},
-		polyline: {
-			shapeOptions: {
-				color: '#f357a1',
-				weight: 10
+				color: '#97009c',
+				fill: false
 			}
 		},
 		rectangle: {
@@ -60,7 +55,6 @@ var options = {
 		// disable toolbar item by setting it to false
 		polyline: false,
 		circle: false, // Turns off this drawing tool
-		polygon: false,
 		marker: false,
 	}
 }
