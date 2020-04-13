@@ -114,6 +114,7 @@ function survey(layer, trackWidth=5) {
 	layer.childSurvey = flightPattern
 }
 
+var selectedElement = null
 map.on('draw:created', function(e) {
 	var type = e.layerType
 	var layer = e.layer
@@ -123,12 +124,14 @@ map.on('draw:created', function(e) {
 		layer.on("edit", function(E) {
 			searchAreas.removeLayer(E.target.childSurvey)
 			survey(E.target)
-			E.target.editing.disable()
 		})
 	}
 
 
 	layer.on("click", function(E) {
+		if (selectedElement)
+			selectedElement.editing.disable()
+		selectedElement = E.target
 		E.target.editing.enable()
 	})
 
