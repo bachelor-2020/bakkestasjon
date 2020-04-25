@@ -1,3 +1,3 @@
-[submodule "static_html/js/Leaflet.draw"]
-	path = static_html/js/Leaflet.draw
+[submodule "static/js/Leaflet.draw"]
+	path = static/js/Leaflet.draw
 	url = https://github.com/leaflet/Leaflet.draw
