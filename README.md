@@ -1,12 +1,8 @@
 ## Dependencies
  - Docker
-
-## Building
-```
-sudo docker build -t bakkestasjon .
-```
+ - Docker-compose
 
 ## Running
 ```
-sudo docker run -it --rm -p 5000:5000 bakkestasjon
+sudo docker-compose up --build
 ```
