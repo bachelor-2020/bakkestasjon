@@ -1,3 +1,11 @@
 [submodule "app/static/js/Leaflet.draw"]
 	path = app/static/js/Leaflet.draw
 	url = https://github.com/leaflet/Leaflet.draw
+
+[submodule "app/print_to_gcs"]
+	path = app/print_to_gcs
+	url = https://github.com/bachelor-2020/print_to_gcs
+
+[submodule "app/push_mission"]
+	path = app/push_mission
+	url = https://github.com/bachelor-2020/push_mission
