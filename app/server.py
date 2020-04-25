@@ -1,4 +1,7 @@
 from flask import Flask, render_template, jsonify, request
+import pymongo
+
+myclient = pymongo.MongoClient("mongodb://mongo:27017/")
 
 app = Flask(__name__, static_url_path='')
 
