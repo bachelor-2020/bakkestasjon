@@ -54,7 +54,7 @@ def get_drone_list():
 def post_drone_mission(drone_id):
     drone = drones.find_one({"_id":int(drone_id)})
     drones.update_one({"_id":int(drone_id)}, {
-        "$set": {"mission": str(request.json)}
+        "$set": {"mission": request.json["mission"]}
     })
     return request.json
 

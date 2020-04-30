@@ -1,3 +1,4 @@
+var xhttp = new XMLHttpRequest()
 
 var waypoints = L.layerGroup()
 var drones = L.layerGroup()
@@ -110,6 +111,7 @@ function survey(layer, trackWidth=5) {
 	var flightPattern = L.polyline(points, {opacity: 0.5, weight: 5})
 	flightPattern.parent = layer
 	flightPattern.on("click", function(e) { e.target.parent.editing.enable() })
+	flightPattern.waypoints = points
 	searchAreas.addLayer(flightPattern)
 	layer.childSurvey = flightPattern
 }
@@ -137,4 +139,24 @@ map.on('draw:created', function(e) {
 
 	map.addLayer(layer)
 })
-navigator.geolocation.getCurrentPosition(position => alert(position.coords.latitude), error => alert(error), {timeout: 10000})
+
+
+function startMission() {
+
+	searchAreas.eachLayer(layer => {
+		post_data = []
+		for (const wp of layer.waypoints) {
+			post_data.push({
+				"latitude": wp[0],
+				"longitude": wp[1],
+				"altitude": 10
+			})
+		}
+		xhttp.open("POST", "/api/drones/0/mission", true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(JSON.stringify({"mission":post_data}))
+	})
+}
+
+
+//navigator.geolocation.getCurrentPosition(position => alert(position.coords.latitude), error => alert(error), {timeout: 10000})
