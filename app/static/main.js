@@ -117,7 +117,10 @@ function survey(layer, trackWidth=5) {
 
 	var flightPattern = L.polyline(points, {opacity: 0.5, weight: 5})
 	flightPattern.parent = layer
-	flightPattern.on("click", e => editLayer(e.target.parent))
+	flightPattern.on("click", e => {
+		L.DomEvent.stopPropagation(e)
+		editLayer(e.target.parent)
+	})
 	flightPattern.waypoints = points
 	searchAreas.addLayer(flightPattern)
 	layer.childSurvey = flightPattern
@@ -135,11 +138,19 @@ map.on('draw:created', function(e) {
 	})
 
 
-	layer.on("click", e => editLayer(e.target))
+	layer.on("click", e => {
+		L.DomEvent.stopPropagation(e)
+		editLayer(e.target)
+	})
 
 	map.addLayer(layer)
 })
 
+map.on("click", e => {
+	if (selectedElement)
+		selectedElement.editing.disable()
+	selectedElement = null
+})
 
 function startMission() {
 
