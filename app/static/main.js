@@ -66,6 +66,12 @@ var drawControl = new L.Control.Draw(options)
 map.addControl(drawControl)
 L.control.scale({imperial: false}).addTo(map);
 
+function editLayer(layer) {
+	if (selectedElement)
+		selectedElement.editing.disable()
+	selectedElement = layer
+	layer.editing.enable()
+}
 
 function meter2deg(meter) {
 	return meter/111111
@@ -111,7 +117,7 @@ function survey(layer, trackWidth=5) {
 
 	var flightPattern = L.polyline(points, {opacity: 0.5, weight: 5})
 	flightPattern.parent = layer
-	flightPattern.on("click", function(e) { e.target.parent.editing.enable() })
+	flightPattern.on("click", e => editLayer(e.target.parent))
 	flightPattern.waypoints = points
 	searchAreas.addLayer(flightPattern)
 	layer.childSurvey = flightPattern
@@ -129,12 +135,7 @@ map.on('draw:created', function(e) {
 	})
 
 
-	layer.on("click", function(E) {
-		if (selectedElement)
-			selectedElement.editing.disable()
-		selectedElement = E.target
-		E.target.editing.enable()
-	})
+	layer.on("click", e => editLayer(e.target))
 
 	map.addLayer(layer)
 })
