@@ -75,8 +75,8 @@ function survey(layer, trackWidth=5) {
 	var area = layer.getBounds()
 	var width = meter2deg(trackWidth)
 
-	var west = area.getWest() + width
-	var east = area.getEast() - width
+	var west = area.getWest() - 10
+	var east = area.getEast() + 10
 	var north = area.getNorth() - width/2
 	var south = area.getSouth() + width/2
 
@@ -86,25 +86,26 @@ function survey(layer, trackWidth=5) {
 		var p1 = [lat, west]
 		var p2 = [lat, east]
 
-		if (i%2==0) {
-			points.push(p1)
-			points.push(p2)
-		}
-		else {
-			points.push(p2)
-			points.push(p1)
-		}
-		i++
-	}
+		var line = L.polyline([p1,p2])
+		var inter = turf.lineIntersect(line.toGeoJSON(), layer.toGeoJSON())
 
-	if (p1[0] > south + meter2deg(0.1)) {
-		if (i%2==0) {
-			points.push([south, west])
-			points.push([south, east])
-		}
-		else {
-			points.push([south,east])
-			points.push([south,west])
+		var P = inter.features.map(d => {return d.geometry.coordinates})
+		p1 = P[0]
+		p2 = P[1]
+
+		if (p1!=null && p2!=null) {
+			p1 = [p1[1], p1[0]]
+			p2 = [p2[1], p2[0]]
+
+			if (i%2==0) {
+				points.push(p1)
+				points.push(p2)
+			}
+			else {
+				points.push(p2)
+				points.push(p1)
+			}
+			i++
 		}
 	}
 
@@ -121,13 +122,11 @@ map.on('draw:created', function(e) {
 	var type = e.layerType
 	var layer = e.layer
 
-	if (type == "rectangle") {
-		survey(layer)
-		layer.on("edit", function(E) {
-			searchAreas.removeLayer(E.target.childSurvey)
-			survey(E.target)
-		})
-	}
+	survey(layer)
+	layer.on("edit", function(E) {
+		searchAreas.removeLayer(E.target.childSurvey)
+		survey(E.target)
+	})
 
 
 	layer.on("click", function(E) {
