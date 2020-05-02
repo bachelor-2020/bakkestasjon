@@ -186,5 +186,13 @@ function startMission() {
 	})
 }
 
-
-//navigator.geolocation.getCurrentPosition(position => alert(position.coords.latitude), error => alert(error), {timeout: 10000})
+navigator.geolocation.getCurrentPosition(function(position){
+	xhttp.open("POST", "/api/clients/0/position", true)
+	xhttp.setRequestHeader("Content-type", "application/json")
+	xhttp.send(JSON.stringify({
+		"position": {
+			"latitude": position.coords.latitude,
+			"longitude": position.coords.longitude
+		}
+	}))
+})
