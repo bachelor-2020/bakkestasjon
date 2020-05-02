@@ -201,7 +201,7 @@ function updateDronePosition() {
 	}
 	xhttp.send()
 }
-setInterval(updateDronePosition,1000)
+setInterval(updateDronePosition,500)
 
 function startMission() {
 
