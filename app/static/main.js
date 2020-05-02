@@ -45,7 +45,7 @@ var options = {
 			},
 			shapeOptions: {
 				color: '#97009c',
-				fill: false
+				fill: true
 			}
 		},
 		rectangle: {
