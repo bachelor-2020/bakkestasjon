@@ -14,15 +14,18 @@ services:
       - ./db:/data/db
   rosmaster:
     build: ros
+    restart: unless-stopped
   ros_fake_gps:
     build: ros_fake_gps
     environment:
       - "ROS_HOSTNAME=ros_fake_gps"
       - "ROS_MASTER_URI=http://rosmaster:11311"
       - "ROS_PACKAGE_PATH=/usr/src/app/fake_gps:$ROS_PACKAGE_PATH"
+    restart: unless-stopped
   ros_print_to_gcs:
     build: ros_print_to_gcs
     environment:
       - "ROS_HOSTNAME=ros_print_to_gcs"
       - "ROS_MASTER_URI=http://rosmaster:11311"
       - "ROS_PACKAGE_PATH=/usr/src/app/print_to_gcs:$ROS_PACKAGE_PATH"
+    restart: unless-stopped
