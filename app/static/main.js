@@ -61,6 +61,38 @@ var options = {
 	}
 }
 
+var MyCustomMarker = L.Icon.extend({
+	options: {
+		shadowUrl: null,
+		iconAnchor: new L.Point(12, 12),
+		iconSize: new L.Point(24, 24),
+		iconUrl: 'link/to/image.png'
+	}
+})
+
+L.DrawToolbar.include({
+	getModeHandlers: function (map) {
+		return [
+			{
+				enabled: true,
+				handler: new L.Draw.Rectangle(map, { metric: true}),
+				title: 'Rectangular search area'
+			},
+			{
+				enabled: true,
+				handler: new L.Draw.Polygon(map, { allowIntersection: false, showArea: true, metric: true, repeatMode: false }),
+				title: 'Polygonal search area'
+			},
+			{
+				enabled: true,
+				handler: new L.Draw.Marker(map, { icon: new L.Icon.Default() }),
+				title: 'Rally point'
+			}
+		]
+	}
+})
+
+
 // Initialise the draw control and pass it the FeatureGroup of editable layers
 var drawControl = new L.Control.Draw(options)
 map.addControl(drawControl)
@@ -131,11 +163,13 @@ map.on('draw:created', function(e) {
 	var type = e.layerType
 	var layer = e.layer
 
-	survey(layer)
-	layer.on("edit", function(E) {
-		searchAreas.removeLayer(E.target.childSurvey)
-		survey(E.target)
-	})
+	if (type=="rectangle" || type=="polygon") {
+		survey(layer)
+		layer.on("edit", function(E) {
+			searchAreas.removeLayer(E.target.childSurvey)
+			survey(E.target)
+		})
+	}
 
 
 	layer.on("click", e => {
