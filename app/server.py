@@ -10,10 +10,11 @@ drone_1 = {
     "_id": 0,
     "name": "Drone 1",
     "position": {
-        "latitude": 10,
-        "longitude": 50,
+        "latitude": 59.3687,
+        "longitude": 10.442,
         "altitude": 0
     },
+    "trail": [],
     "mission": []
 }
 

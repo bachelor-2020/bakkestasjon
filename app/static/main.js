@@ -5,7 +5,7 @@ var drones = L.layerGroup()
 var searchAreas = L.layerGroup()
 
 L.marker([59.368750, 10.442077]).bindTooltip('Her er kantina').addTo(waypoints)
-L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
+var drone_0 = L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
 
 
 var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -151,6 +151,23 @@ map.on("click", e => {
 		selectedElement.editing.disable()
 	selectedElement = null
 })
+
+
+function updateDronePosition() {
+	xhttp.open("GET", "/api/drones/0/position", true)
+	xhttp.onreadystatechange = function () {
+		if(xhttp.readyState === XMLHttpRequest.DONE) {
+			var pos = JSON.parse(this.responseText)["position"]
+			var lat = pos["latitude"]
+			var lng = pos["longitude"]
+			var alt = pos["altitude"]
+
+			drone_0.setLatLng([lat,lng])
+		}
+	}
+	xhttp.send()
+}
+setInterval(updateDronePosition,1000)
 
 function startMission() {
 
