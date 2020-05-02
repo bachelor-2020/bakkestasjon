@@ -1,14 +1,12 @@
 [submodule "app/static/js/Leaflet.draw"]
 	path = app/static/js/Leaflet.draw
 	url = https://github.com/leaflet/Leaflet.draw
-
-[submodule "app/print_to_gcs"]
-	path = ros/print_to_gcs
-	url = https://github.com/bachelor-2020/print_to_gcs
-
-[submodule "app/push_mission"]
-	path = ros/push_mission
-	url = https://github.com/bachelor-2020/push_mission
 [submodule "fake_drone"]
 	path = fake_drone
 	url = https://github.com/bachelor-2020/fake_drone
+[submodule "ros_print_to_gcs/print_to_gcs"]
+	path = ros_print_to_gcs/print_to_gcs
+	url = https://github.com/bachelor-2020/print_to_gcs
+[submodule "ros_fake_gps/fake_gps"]
+	path = ros_fake_gps/fake_gps
+	url = https://github.com/bachelor-2020/fake_gps
