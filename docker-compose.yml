@@ -29,3 +29,6 @@ services:
       - "ROS_MASTER_URI=http://rosmaster:11311"
       - "ROS_PACKAGE_PATH=/usr/src/app/print_to_gcs:$ROS_PACKAGE_PATH"
     restart: unless-stopped
+  fake_drone:
+    build: fake_drone
+    restart: unless-stopped
