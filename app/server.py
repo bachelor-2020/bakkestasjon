@@ -87,16 +87,4 @@ def post_client_pos(client_id):
     })
     return request.json
 
-# Last opp ny mission
-@app.route("/api/mission", methods=["POST"])
-def post_mission():
-    return request.json
-
-# Hent mission
-@app.route("/api/mission")
-def get_mission():
-    return jsonify(
-        mission = []
-    )
-
 app.run(host="0.0.0.0")
