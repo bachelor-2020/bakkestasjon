@@ -87,4 +87,21 @@ def post_client_pos(client_id):
     })
     return request.json
 
+# Hent hele sporet etter drone. (full posisjonshistorikk)
+@app.route("/api/drones/<drone_id>/trail")
+def get_full_trail(drone_id):
+    return jsonify(
+        trail = drones.find_one({"_id":int(drone_id)})["trail"]
+    )
+
+# Hent enden av sporet etter drone. (delvis posisjonshistorikk fra index)
+@app.route("/api/drones/<drone_id>/trail/<index>")
+def get_partial_trail(drone_id, index):
+    return jsonify(
+        list(drones.aggregate([
+            {"$match": {"_id": int(drone_id)} },
+            {"$project": {"trail": { "$slice": ["$trail", int(index), 1000] }, "_id":0}}
+        ])
+    )[0])
+
 app.run(host="0.0.0.0")
