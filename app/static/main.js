@@ -108,6 +108,24 @@ function meter2deg(meter) {
 	return meter/111111
 }
 
+function subdivide(layer){
+	var area = layer.getBounds()
+	var width = meter2deg(100)
+
+	var west = area.getWest() - width
+	var east = area.getEast() + width
+	var north = area.getNorth()
+	var south = area.getSouth()
+
+
+	for (var lat=north; lat>south; lat-=width) {
+		for (var lng=west; lng<east; lng+=width) {
+			var box = L.rectangle([[lat,lng],[lat+width,lng+width*2]])
+			L.geoJSON(turf.intersect(box.toGeoJSON(), layer.toGeoJSON())).addTo(map)
+		}
+	}
+}
+
 function survey(layer, trackWidth=5) {
 	var area = layer.getBounds()
 	var width = meter2deg(trackWidth)
