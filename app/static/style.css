@@ -5,7 +5,6 @@ html, body {
 }
 #header {
 	background-color: #121212;
-	padding: 10px 0px 10px;
 	flex: 0 1 auto;
 }
 #header a:link {
@@ -27,4 +26,16 @@ html, body {
 	height: 100%;
 	display: flex;
 	flex-flow: column;
+}
+button {
+	color: black;
+	padding: 10px 10px 10px;
+	background: none;
+	border: none;
+	text-decoration: none;
+	cursor: pointer;
+}
+#header button:hover {
+	background-color: #454545;
+	color: white;
 }
