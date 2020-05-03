@@ -69,6 +69,7 @@ def post_drone_pos(drone_id):
         {"_id": int(drone_id)},
         {"$push": {"trail": {"position": position} }}
     )
+    return request.json
 
 # Hent liste over droner
 @app.route("/api/drones")
