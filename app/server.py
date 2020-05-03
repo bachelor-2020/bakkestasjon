@@ -57,6 +57,19 @@ def get_drone_pos(drone_id):
         position = drones.find_one({"_id":int(drone_id)})["position"],
     )
 
+# Post droneposisjon
+@app.route("/api/drones/<drone_id>/position", methods=["POST"])
+def post_drone_pos(drone_id):
+    position = request.json
+    drones.update_one(
+        {"_id": int(drone_id)},
+        {"$set": {"position": position} }
+    )
+    drones.update_one(
+        {"_id": int(drone_id)},
+        {"$push": {"trail": {"position": position} }}
+    )
+
 # Hent liste over droner
 @app.route("/api/drones")
 def get_drone_list():
