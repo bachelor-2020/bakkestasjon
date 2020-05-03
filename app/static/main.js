@@ -229,3 +229,12 @@ navigator.geolocation.getCurrentPosition(function(position){
 		}
 	}))
 })
+
+function toggleElement(e) {
+	if (e.style.display=="none") {
+		e.style.display = "block"
+	}
+	else if (e.style.display=="block") {
+		e.style.display = "none"
+	}
+}

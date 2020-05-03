@@ -27,6 +27,16 @@ html, body {
 	display: flex;
 	flex-flow: column;
 }
+#sidebar {
+	color: white;
+	background-color: #787878;
+	flex: 0 1 auto;
+	display: "block";
+}
+#sidebar a {
+	color: white;
+	text-decoration: none;
+}
 button {
 	color: black;
 	padding: 10px 10px 10px;
@@ -35,7 +45,20 @@ button {
 	text-decoration: none;
 	cursor: pointer;
 }
+#header button {
+	color: white;
+}
 #header button:hover {
+	background-color: #454545;
+	color: white;
+}
+#sidebar button {
+	border: 1px;
+	border-style: solid none;
+	border-color: black;
+	width: 100%;
+}
+#sidebar button:hover {
 	background-color: #454545;
 	color: white;
 }
