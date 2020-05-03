@@ -4,7 +4,6 @@ var waypoints = L.layerGroup()
 var drones = L.layerGroup()
 var searchAreas = L.layerGroup()
 
-L.marker([59.368750, 10.442077]).bindTooltip('Her er kantina').addTo(waypoints)
 var drone_0 = L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
 
 
