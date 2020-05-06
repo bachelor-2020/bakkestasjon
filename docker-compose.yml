@@ -32,3 +32,9 @@ services:
   fake_drone:
     build: fake_drone
     restart: unless-stopped
+  ros_push_mission:
+    build: ros_push_mission
+    environment:
+      - "ROS_HOSTNAME=ros_push_mission"
+      - "ROS_MASTER_URI=http://rosmaster:11311"
+      - "ROS_PACKAGE_PATH=/usr/src/app/call_mavros_mission_push"
