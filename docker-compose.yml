@@ -13,10 +13,8 @@ services:
     volumes:
       - ./db:/data/db
   ros_test:
-    image: ros:melodic-ros-core
+    build: ros
     command: rostopic list
-    environment:
-      - "ROS_MASTER_URI=http://192.168.5.1:11311"
     extra_hosts:
       - "navio:192.168.5.1"
   ros_objects:
@@ -24,7 +22,6 @@ services:
     command: ./objects.py
     environment:
       - "ROS_HOSTNAME=ros_objects"
-      - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
       - "mongo"
@@ -36,7 +33,6 @@ services:
     command: ./gps.py
     environment:
       - "ROS_HOSTNAME=ros_gps"
-      - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
       - "mongo"
@@ -47,7 +43,6 @@ services:
     build: ros
     command: ./push_mission.py
     environment:
-      - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
       - "mongo"
