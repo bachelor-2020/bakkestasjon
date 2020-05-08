@@ -19,10 +19,11 @@ services:
       - "ROS_MASTER_URI=http://192.168.5.1:11311"
     extra_hosts:
       - "navio:192.168.5.1"
-  ros_print_to_gcs:
-    build: ros_print_to_gcs
+  ros_objects:
+    build: ros
+    command: ./objects.py
     environment:
-      - "ROS_HOSTNAME=ros_print_to_gcs"
+      - "ROS_HOSTNAME=ros_objects"
       - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
@@ -30,10 +31,11 @@ services:
       - "app"
     extra_hosts:
       - "navio:192.168.5.1"
-  ros_print_gps:
-    build: ros_print_gps
+  ros_gps:
+    build: ros
+    command: ./gps.py
     environment:
-      - "ROS_HOSTNAME=ros_print_gps"
+      - "ROS_HOSTNAME=ros_gps"
       - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
@@ -42,7 +44,8 @@ services:
     extra_hosts:
       - "navio:192.168.5.1"
   ros_push_mission:
-    build: ros_push_mission
+    build: ros
+    command: ./push_mission.py
     environment:
       - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
