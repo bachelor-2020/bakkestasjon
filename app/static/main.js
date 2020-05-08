@@ -1,4 +1,3 @@
-var xhttp = new XMLHttpRequest()
 
 var waypoints = L.layerGroup()
 var drones = L.layerGroup()
@@ -205,6 +204,7 @@ map.on("click", e => {
 
 
 function updateDronePosition() {
+	var xhttp = new XMLHttpRequest()
 	xhttp.open("GET", "/api/drones/0/position", true)
 	xhttp.onreadystatechange = function () {
 		if(xhttp.readyState === XMLHttpRequest.DONE) {
@@ -231,6 +231,7 @@ function startMission() {
 				"altitude": 10
 			})
 		}
+		var xhttp = new XMLHttpRequest()
 		xhttp.open("POST", "/api/drones/0/mission", true);
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send(JSON.stringify({"mission":post_data}))
