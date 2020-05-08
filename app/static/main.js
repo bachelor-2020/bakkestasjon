@@ -1,6 +1,7 @@
 
 var waypoints = L.layerGroup()
 var drones = L.layerGroup()
+var droneTrail = L.layerGroup()
 var clients = L.layerGroup()
 var searchAreas = L.layerGroup()
 
@@ -18,7 +19,7 @@ var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, 
 var map = L.map('map', {
 	center: [59.368750, 10.442077],
 	zoom: 15,
-	layers: [satellite, searchAreas, waypoints, drones, clients]
+	layers: [satellite, searchAreas, waypoints, drones, droneTrail, clients]
 })
 
 var baseLayers = {
@@ -30,6 +31,7 @@ var overlays = {
 	"Search Areas": searchAreas,
 	"Waypoints": waypoints,
 	"Drones": drones,
+	"Drone trail": droneTrail,
 	"Clients": clients
 }
 
@@ -204,6 +206,22 @@ map.on("click", e => {
 	selectedElement = null
 })
 
+var trailLine
+var trail = []
+var xhttp = new XMLHttpRequest()
+xhttp.open("GET", "/api/drones/0/trail", true)
+xhttp.onreadystatechange = function () {
+	if(xhttp.readyState === XMLHttpRequest.DONE) {
+		for (pos of JSON.parse(this.responseText)["trail"]) {
+			var lat = pos["position"]["latitude"]
+			var lng = pos["position"]["longitude"]
+			trail.push([lat,lng])
+		}
+
+		trailLine = L.polyline(trail, {opacity: 0.5, weight: 5}).addTo(droneTrail)
+	}
+}
+xhttp.send()
 
 function updateDronePosition() {
 	var xhttp = new XMLHttpRequest()
@@ -216,6 +234,7 @@ function updateDronePosition() {
 			var alt = pos["altitude"]
 
 			drone_0.setLatLng([lat,lng])
+			trailLine.addLatLng([lat,lng])
 		}
 	}
 	xhttp.send()
