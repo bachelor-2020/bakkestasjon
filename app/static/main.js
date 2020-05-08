@@ -1,11 +1,11 @@
 
-var waypoints = L.layerGroup()
-var drones = L.layerGroup()
-var droneTrail = L.layerGroup()
-var clients = L.layerGroup()
-var searchAreas = L.layerGroup()
+var L_waypoints = L.layerGroup()
+var L_drones = L.layerGroup()
+var L_droneTrail = L.layerGroup()
+var L_clients = L.layerGroup()
+var L_searchAreas = L.layerGroup()
 
-var drone_0 = L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
+var drone_0 = L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(L_drones)
 
 
 var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
@@ -13,26 +13,26 @@ var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStree
 		'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 	mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 
-var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
-	streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
+var L_satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+	L_streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
 
 var map = L.map('map', {
 	center: [59.368750, 10.442077],
 	zoom: 15,
-	layers: [satellite, searchAreas, waypoints, drones, droneTrail, clients]
+	layers: [L_satellite, L_searchAreas, L_waypoints, L_drones, L_droneTrail, L_clients]
 })
 
 var baseLayers = {
-	"Satellite": satellite,
-	"Streets": streets
+	"Satellite": L_satellite,
+	"Streets": L_streets
 }
 
 var overlays = {
-	"Search Areas": searchAreas,
-	"Waypoints": waypoints,
-	"Drones": drones,
-	"Drone trail": droneTrail,
-	"Clients": clients
+	"Search Areas": L_searchAreas,
+	"Waypoints": L_waypoints,
+	"Drones": L_drones,
+	"Drone trail": L_droneTrail,
+	"Clients": L_clients
 }
 
 L.control.layers(baseLayers, overlays).addTo(map)
@@ -174,7 +174,7 @@ function survey(layer, trackWidth=5) {
 		editLayer(e.target.parent)
 	})
 	flightPattern.waypoints = points
-	searchAreas.addLayer(flightPattern)
+	L_searchAreas.addLayer(flightPattern)
 	layer.childSurvey = flightPattern
 }
 
@@ -186,7 +186,7 @@ map.on('draw:created', function(e) {
 	if (type=="rectangle" || type=="polygon") {
 		survey(layer)
 		layer.on("edit", function(E) {
-			searchAreas.removeLayer(E.target.childSurvey)
+			L_searchAreas.removeLayer(E.target.childSurvey)
 			survey(E.target)
 		})
 	}
@@ -218,7 +218,7 @@ xhttp.onreadystatechange = function () {
 			trail.push([lat,lng])
 		}
 
-		trailLine = L.polyline(trail, {opacity: 0.5, weight: 5}).addTo(droneTrail)
+		trailLine = L.polyline(trail, {opacity: 0.5, weight: 5}).addTo(L_droneTrail)
 	}
 }
 xhttp.send()
@@ -276,7 +276,7 @@ function updateMyPosition() {
 			myPosMarker.setLatLng(myPos)
 		}
 		else {
-			myPosMarker = L.marker(myPos).bindTooltip('Her er du').addTo(clients)
+			myPosMarker = L.marker(myPos).bindTooltip('Her er du').addTo(L_clients)
 		}
 	})
 }
