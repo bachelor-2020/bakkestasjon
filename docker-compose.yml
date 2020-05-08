@@ -52,9 +52,19 @@ services:
       - "app"
     extra_hosts:
       - "navio:192.168.5.1"
-  fake_drone:
+  fake_drone1:
     build: fake_drone
     restart: unless-stopped
     depends_on:
       - "mongo"
       - "app"
+    environment:
+      - "DRONE_ID=1"
+  fake_drone2:
+    build: fake_drone
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    environment:
+      - "DRONE_ID=2"
