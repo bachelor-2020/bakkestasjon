@@ -44,7 +44,6 @@ services:
   ros_push_mission:
     build: ros_push_mission
     environment:
-      - "ROS_IP=192.168.5.13"
       - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
     depends_on:
