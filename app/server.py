@@ -34,6 +34,8 @@ client_1 = {
 
 clients.insert_one(client_1)
 
+findings = mydb["findings"]
+
 app = Flask(__name__, static_url_path='')
 
 @app.route("/")
@@ -117,5 +119,18 @@ def get_partial_trail(drone_id, index):
             {"$project": {"trail": { "$slice": ["$trail", int(index), 1000] }, "_id":0}}
         ])
     )[0])
+
+# Post funn
+@app.route("/api/findings", methods=["POST"])
+def post_finding():
+    findings.insert_one(request_json)
+    return request.json
+
+# Hent alle funn
+@app.route("/api/findings")
+def get_full_findings():
+    return jsonify(
+        findings = list(findings.find({}))
+    )
 
 app.run(host="0.0.0.0")
