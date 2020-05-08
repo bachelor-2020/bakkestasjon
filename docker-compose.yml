@@ -12,29 +12,49 @@ services:
     restart: unless-stopped
     volumes:
       - ./db:/data/db
-#  rosmaster:
-#    build: ros
-#    restart: unless-stopped
-#  ros_fake_gps:
-#    build: ros_fake_gps
-#    environment:
-#      - "ROS_HOSTNAME=ros_fake_gps"
-#      - "ROS_MASTER_URI=http://rosmaster:11311"
-#      - "ROS_PACKAGE_PATH=/usr/src/app/fake_gps"
-#    restart: unless-stopped
-#  ros_print_to_gcs:
-#    build: ros_print_to_gcs
-#    environment:
-#      - "ROS_HOSTNAME=ros_print_to_gcs"
-#      - "ROS_MASTER_URI=http://rosmaster:11311"
-#      - "ROS_PACKAGE_PATH=/usr/src/app/print_to_gcs"
-#    restart: unless-stopped
-  fake_drone:
-    build: fake_drone
+  ros_test:
+    image: ros:melodic-ros-core
+    command: rostopic list
+    environment:
+      - "ROS_MASTER_URI=http://192.168.5.1:11311"
+    extra_hosts:
+      - "navio:192.168.5.1"
+  ros_print_to_gcs:
+    build: ros_print_to_gcs
+    environment:
+      - "ROS_HOSTNAME=ros_print_to_gcs"
+      - "ROS_MASTER_URI=http://192.168.5.1:11311"
     restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    extra_hosts:
+      - "navio:192.168.5.1"
+  ros_print_gps:
+    build: ros_print_gps
+    environment:
+      - "ROS_HOSTNAME=ros_print_gps"
+      - "ROS_MASTER_URI=http://192.168.5.1:11311"
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    extra_hosts:
+      - "navio:192.168.5.1"
   ros_push_mission:
     build: ros_push_mission
     environment:
-      - "ROS_HOSTNAME=ros_push_mission"
-      - "ROS_MASTER_URI=http://rosmaster:11311"
-      - "ROS_PACKAGE_PATH=/usr/src/app/call_mavros_mission_push"
+      - "ROS_IP=192.168.5.13"
+      - "ROS_MASTER_URI=http://192.168.5.1:11311"
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    extra_hosts:
+      - "navio:192.168.5.1"
+  fake_drone:
+    build: fake_drone
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
