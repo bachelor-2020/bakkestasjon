@@ -13,3 +13,6 @@
 [submodule "ros_push_mission/push_mission"]
 	path = ros_push_mission/push_mission
 	url = https://github.com/bachelor-2020/push_mission
+[submodule "ros_print_gps/print_gps"]
+	path = ros_print_gps/print_gps
+	url = https://github.com/bachelor-2020/print_gps
