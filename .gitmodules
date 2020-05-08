@@ -4,15 +4,3 @@
 [submodule "fake_drone"]
 	path = fake_drone
 	url = https://github.com/bachelor-2020/fake_drone
-[submodule "ros_print_to_gcs/print_to_gcs"]
-	path = ros_print_to_gcs/print_to_gcs
-	url = https://github.com/bachelor-2020/print_to_gcs
-[submodule "ros_fake_gps/fake_gps"]
-	path = ros_fake_gps/fake_gps
-	url = https://github.com/bachelor-2020/fake_gps
-[submodule "ros_push_mission/push_mission"]
-	path = ros_push_mission/push_mission
-	url = https://github.com/bachelor-2020/push_mission
-[submodule "ros_print_gps/print_gps"]
-	path = ros_print_gps/print_gps
-	url = https://github.com/bachelor-2020/print_gps

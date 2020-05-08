@@ -9,5 +9,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-#CMD [ "roslaunch", "print_to_gcs", "print_to_gcs.launch" ]
-CMD [ "python", "-u", "print_to_gcs/src/print_to_gcs.py" ]
+CMD [ "python", "-u", "print_to_gcs.py" ]
