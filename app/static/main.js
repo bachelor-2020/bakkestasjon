@@ -1,6 +1,7 @@
 
 var waypoints = L.layerGroup()
 var drones = L.layerGroup()
+var clients = L.layerGroup()
 var searchAreas = L.layerGroup()
 
 var drone_0 = L.marker([59.368750, 10.452077]).bindTooltip('Her er drona').addTo(drones)
@@ -17,7 +18,7 @@ var satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, 
 var map = L.map('map', {
 	center: [59.368750, 10.442077],
 	zoom: 15,
-	layers: [satellite, searchAreas, waypoints, drones]
+	layers: [satellite, searchAreas, waypoints, drones, clients]
 })
 
 var baseLayers = {
@@ -28,7 +29,8 @@ var baseLayers = {
 var overlays = {
 	"Search Areas": searchAreas,
 	"Waypoints": waypoints,
-	"Drones": drones
+	"Drones": drones,
+	"Clients": clients
 }
 
 L.control.layers(baseLayers, overlays).addTo(map)
@@ -238,16 +240,28 @@ function startMission() {
 	})
 }
 
-navigator.geolocation.getCurrentPosition(function(position){
-	xhttp.open("POST", "/api/clients/0/position", true)
-	xhttp.setRequestHeader("Content-type", "application/json")
-	xhttp.send(JSON.stringify({
-		"position": {
-			"latitude": position.coords.latitude,
-			"longitude": position.coords.longitude
+var myPosMarker
+function updateMyPosition() {
+	navigator.geolocation.getCurrentPosition(function(position){
+		var xhttp = new XMLHttpRequest()
+		xhttp.open("POST", "/api/clients/0/position", true)
+		xhttp.setRequestHeader("Content-type", "application/json")
+		xhttp.send(JSON.stringify({
+			"position": {
+				"latitude": position.coords.latitude,
+				"longitude": position.coords.longitude
+			}
+		}))
+		var myPos = [ position.coords.latitude, position.coords.longitude ]
+		if (myPosMarker) {
+			myPosMarker.setLatLng(myPos)
 		}
-	}))
-})
+		else {
+			myPosMarker = L.marker(myPos).bindTooltip('Her er du').addTo(clients)
+		}
+	})
+}
+setInterval(updateMyPosition,5000)
 
 function toggleElement(e) {
 	if (e.style.display=="none") {
