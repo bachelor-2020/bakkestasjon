@@ -6,8 +6,20 @@ mydb = myclient["groundstation"]
 drones = mydb["drone"]
 drones.drop()
 
-drone_1 = {
+drones.insert_many(
+[{
     "_id": 0,
+    "name": "Drone 0",
+    "position": {
+        "latitude": 59.3687,
+        "longitude": 10.442,
+        "altitude": 0
+    },
+    "trail": [],
+    "mission": []
+},
+{
+    "_id": 1,
     "name": "Drone 1",
     "position": {
         "latitude": 59.3687,
@@ -16,9 +28,19 @@ drone_1 = {
     },
     "trail": [],
     "mission": []
-}
+},
+{
+    "_id": 2,
+    "name": "Drone 2",
+    "position": {
+        "latitude": 59.3687,
+        "longitude": 10.442,
+        "altitude": 0
+    },
+    "trail": [],
+    "mission": []
+}])
 
-drones.insert_one(drone_1)
 
 clients = mydb["clients"]
 clients.drop()
