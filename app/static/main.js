@@ -243,7 +243,7 @@ setInterval(updateDronePosition,500)
 
 function startMission() {
 
-	searchAreas.eachLayer(layer => {
+	L_searchAreas.eachLayer(layer => {
 		post_data = []
 		for (const wp of layer.waypoints) {
 			post_data.push({
