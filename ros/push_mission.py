@@ -56,7 +56,6 @@ def push_mission(mission):
     waypoints.append(return_to_launch)
     waypoints.append(land)
 
-    print("123123123123123")
     mission_service_object = mission_push_client(
         0, waypoints
     )  # Full waypoint update with waypoints in mission_wp
@@ -66,10 +65,10 @@ if __name__ == "__main__":
 
     rospy.init_node('push_mission', anonymous=True)
 
-    mission = json.loads(requests.get("http://app:5000/api/drones/0/mission").text)["mission"]
+    mission = json.loads(requests.get("http://app:5000/api/drones/0/area").text)["waypoints"]
     while 1:
         last_mission = mission
-        mission = json.loads(requests.get("http://app:5000/api/drones/0/mission").text)["mission"]
+        mission = json.loads(requests.get("http://app:5000/api/drones/0/area").text)["waypoints"]
 
         if len(mission)>0 and mission!=last_mission:
             print("pushing new mission")

@@ -43,6 +43,7 @@ services:
     build: ros
     command: ./push_mission.py
     environment:
+      - "ROS_HOSTNAME=ros_push_mission"
     restart: unless-stopped
     depends_on:
       - "mongo"
@@ -65,3 +66,19 @@ services:
       - "app"
     environment:
       - "DRONE_ID=2"
+  fake_drone3:
+    build: fake_drone
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    environment:
+      - "DRONE_ID=3"
+  fake_drone4:
+    build: fake_drone
+    restart: unless-stopped
+    depends_on:
+      - "mongo"
+      - "app"
+    environment:
+      - "DRONE_ID=4"

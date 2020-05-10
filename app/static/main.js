@@ -120,23 +120,34 @@ function subdivide(layer){
 	var north = area.getNorth()
 	var south = area.getSouth()
 
+	layer.subdivisions = []
 
-	for (var lat=north; lat>south; lat-=width) {
-		for (var lng=west; lng<east; lng+=width) {
+	for (var lat=north; lat>south-width; lat-=width+meter2deg(5)) {
+		for (var lng=west; lng<east; lng+=width*2+meter2deg(5)*2) {
 			var box = L.rectangle([[lat,lng],[lat+width,lng+width*2]])
-			L.geoJSON(turf.intersect(box.toGeoJSON(), layer.toGeoJSON())).addTo(map)
+			var intersection = turf.intersect(box.toGeoJSON(), layer.toGeoJSON())
+			if (intersection) {
+				var subdivision = L.geoJSON(intersection, {pointToLayer: ()=>{}}).addTo(L_searchAreas)
+				layer.subdivisions.push(subdivision)
+				subdivision.parent = layer
+				subdivision.on("click", e => {
+					L.DomEvent.stopPropagation(e)
+					editLayer(e.target.parent)
+				})
+				survey(subdivision, box.getBounds())
+			}
 		}
 	}
+
 }
 
-function survey(layer, trackWidth=5) {
-	var area = layer.getBounds()
+function survey(layer, area, trackWidth=5) {
 	var width = meter2deg(trackWidth)
 
-	var west = area.getWest() - 10
-	var east = area.getEast() + 10
-	var north = area.getNorth() - width/2
-	var south = area.getSouth() + width/2
+	var west = area.getWest()
+	var east = area.getEast()
+	var north = area.getNorth()
+	var south = area.getSouth()
 
 	var points = []
 	var i=0
@@ -171,7 +182,7 @@ function survey(layer, trackWidth=5) {
 	flightPattern.parent = layer
 	flightPattern.on("click", e => {
 		L.DomEvent.stopPropagation(e)
-		editLayer(e.target.parent)
+		editLayer(e.target.parent.parent)
 	})
 	flightPattern.waypoints = points
 	L_searchAreas.addLayer(flightPattern)
@@ -184,10 +195,14 @@ map.on('draw:created', function(e) {
 	var layer = e.layer
 
 	if (type=="rectangle" || type=="polygon") {
-		survey(layer)
+		subdivide(layer)
 		layer.on("edit", function(E) {
-			L_searchAreas.removeLayer(E.target.childSurvey)
-			survey(E.target)
+			for (sub of E.target.subdivisions) {
+				L_searchAreas.removeLayer(sub.childSurvey)
+				L_searchAreas.removeLayer(sub)
+			}
+
+			subdivide(E.target)
 		})
 	}
 
@@ -244,18 +259,24 @@ setInterval(updateDronePosition,500)
 function startMission() {
 
 	L_searchAreas.eachLayer(layer => {
-		post_data = []
-		for (const wp of layer.waypoints) {
-			post_data.push({
-				"latitude": wp[0],
-				"longitude": wp[1],
-				"altitude": 10
-			})
+		var areas = []
+		if (layer.subdivisions) {
+			for (const sub of layer.subdivisions) {
+				var waypoints = []
+				for (const wp of layer.waypoints) {
+					waypoints.push({
+						"latitude": wp[0],
+						"longitude": wp[1],
+						"altitude": 10
+					})
+				}
+				areas.push(waypoints)
+			}
+			var xhttp = new XMLHttpRequest()
+			xhttp.open("POST", "/api/mission", true);
+			xhttp.setRequestHeader("Content-type", "application/json");
+			xhttp.send(JSON.stringify(areas))
 		}
-		var xhttp = new XMLHttpRequest()
-		xhttp.open("POST", "/api/drones/0/mission", true);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send(JSON.stringify({"mission":post_data}))
 	})
 }
 
