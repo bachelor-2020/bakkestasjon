@@ -67,7 +67,6 @@ function subdivide(layer) {
 			}
 		}
 	}
-
 }
 
 
@@ -120,7 +119,6 @@ function survey(layer, geojson, bounds, trackWidth=5) {
 		points: corners,
 		taken: 0
 	})
-
 }
 
 
@@ -142,8 +140,8 @@ function startMission() {
 		},
 		(res) => {}
 	)
-
 }
+
 
 map.on('draw:created', function(e) {
 	var type = e.layerType
