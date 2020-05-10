@@ -1,9 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 import pymongo
 from math import sqrt
-import threading
-
-sem = threading.Semaphore()
 
 myclient = pymongo.MongoClient("mongodb://mongo:27017/")
 mydb = myclient["groundstation"]
@@ -128,10 +125,10 @@ def get_drone_mission(drone_id):
             "waypoints": current_mission["waypoints"]
         })
 
+
     # Eller start på en ny mission
     else:
         try:
-            sem.acquire()
             pos = drones.find_one({"_id":int(drone_id)})["position"]
             new_mission = get_closest_area(pos)
             areas.update_one(
@@ -142,7 +139,6 @@ def get_drone_mission(drone_id):
                 {"_id": int(drone_id)},
                 {"$set": {"area_id": new_mission["_id"]}}
             )
-            sem.release()
             return jsonify(new_mission)
         except:
             return jsonify({
@@ -246,7 +242,8 @@ def get_mission():
 def post_mission():
     mission.drop() # Dropp forrige mission
     areas.drop()
-    drones.update_many({}, {"$set": {"area": []}})
+
+    drones.update_many({}, {"$set": {"area_id": "", "trail": []}})
     mission.insert_one({
         "_id": 0,
         "points": request.json["points"]
@@ -263,12 +260,9 @@ def post_reached_waypoint(area_id):
     })
     this_area = areas.find_one({"_id":int(area_id)})
     if request.json["index"] >= len(this_area["waypoints"]):
-        print("\n\n\nDONE!!\n\n\n\n")
         areas.update_one({"_id":int(area_id)},{
             "$set": {"done": 1}
         })
-    else:
-        print("\n\n\n\nREACHED",request.json["index"],"  LENGTH:",len(this_area["waypoints"]))
     return request.json
 
 

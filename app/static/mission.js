@@ -4,21 +4,19 @@ var mission = {
 	areaCount: 0
 }
 
-var lastMissionResponse
-
 // Fjern forrige mission fra kartet
 function clearMission() {
 	map.removeLayer(layers.areas)
 	layers.areas = L.layerGroup().addTo(map)
 }
 
-
 // Hent nyeste mission fra API og eventuelt oppdater mission på kartet
+var lastPoints
 function updateMission() {
 	ajaxGet("/api/mission", (res) => {
-		if (res && JSON.stringify(res) !== JSON.stringify(lastMissionResponse)) {
+		if (res && JSON.stringify(res.points) !== JSON.stringify(lastPoints)) {
+			lastPoints = res.points
 			mission.points = res.points
-			lastMissionResponse = res
 			ajaxGet("/api/areas", (res) => {
 				mission.areas = res
 				clearMission()
