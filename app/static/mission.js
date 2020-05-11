@@ -6,8 +6,9 @@ var mission = {
 
 // Fjern forrige mission fra kartet
 function clearMission() {
-	map.removeLayer(layers.areas)
-	layers.areas = L.layerGroup().addTo(map)
+	layers.areas.eachLayer((l) => {
+		map.removeLayer(l)
+	})
 }
 
 // Hent nyeste mission fra API og eventuelt oppdater mission på kartet
