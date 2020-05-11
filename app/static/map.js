@@ -7,6 +7,15 @@ var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStree
 var L_satellite   = L.tileLayer(mbUrl, {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
 	L_streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
 
+var L_OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+	maxZoom: 17,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+
+var L_Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
 var layers = {
 	drones: L.layerGroup(),
 	trails: L.layerGroup(),
@@ -22,8 +31,10 @@ var map = L.map('map', {
 
 
 var baseLayers = {
-	"Satellite": L_satellite,
-	"Streets": L_streets
+	"Google Maps": L_satellite,
+	"OpenStreetMap": L_streets,
+	"OpenTopoMap": L_OpenTopoMap,
+	"ESRI World Imagery": L_Esri_WorldImagery
 }
 
 var overlays = {
