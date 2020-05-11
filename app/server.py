@@ -266,6 +266,29 @@ def post_reached_waypoint(area_id):
     return request.json
 
 
+# Hent info om alle klienter
+@app.route("/api/clients")
+def get_clients():
+    return jsonify(
+        list(clients.find({}))
+    )
+
+
+# Hent info spesifisert klient
+@app.route("/api/clients/<client_id>")
+def get_client(client_id):
+    return jsonify(
+        clients.find_one({"_id":int(client_id)})
+    )
+
+
+# Hent posisjon for alle klienter
+@app.route("/api/clients/position")
+def get_all_client_pos():
+    return jsonify(
+        list(clients.find({},{"position":1}))
+    )
+
 
 @app.route("/api/clients/<client_id>/position")
 def get_client_pos(client_id):
