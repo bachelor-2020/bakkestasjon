@@ -12,44 +12,6 @@ services:
     restart: unless-stopped
     volumes:
       - ./db:/data/db
-  ros_test:
-    build: ros
-    command: rostopic list
-    extra_hosts:
-      - "navio:192.168.5.1"
-  ros_objects:
-    build: ros
-    command: ./objects.py
-    environment:
-      - "ROS_HOSTNAME=ros_objects"
-    restart: unless-stopped
-    depends_on:
-      - "mongo"
-      - "app"
-    extra_hosts:
-      - "navio:192.168.5.1"
-  ros_gps:
-    build: ros
-    command: ./gps.py
-    environment:
-      - "ROS_HOSTNAME=ros_gps"
-    restart: unless-stopped
-    depends_on:
-      - "mongo"
-      - "app"
-    extra_hosts:
-      - "navio:192.168.5.1"
-  ros_push_mission:
-    build: ros
-    command: ./push_mission.py
-    environment:
-      - "ROS_HOSTNAME=ros_push_mission"
-    restart: unless-stopped
-    depends_on:
-      - "mongo"
-      - "app"
-    extra_hosts:
-      - "navio:192.168.5.1"
   fake_drone1:
     build: fake_drone
     restart: unless-stopped
