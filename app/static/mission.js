@@ -29,12 +29,17 @@ function updateMission() {
 setInterval(updateMission, 500)
 
 
-// Gjør om fra meter til grader
-// TODO: fikse denne
-function meter2deg(meter) {
-	return meter/111111
+// Finner koordinater [x,y] meter unna original posisjon
+function addToCoord(position, distance) {
+	var earth_radius = 6378000
+	var latitude = position[0]
+	var longitude = position[1]
+	var dy = distance[0]
+	var dx = distance[1]
+	var new_lat = latitude  + (dy / earth_radius) * (180 / Math.PI)
+	var new_lng = longitude + (dx / earth_radius) * (180 / Math.PI) / Math.cos(latitude * Math.PI/180)
+	return [new_lat, new_lng]
 }
-
 
 // Lag ny mission
 function createMission(layer) {
@@ -51,30 +56,37 @@ function createMission(layer) {
 // Del opp et søkeområde i mindre ruter
 function subdivide(layer) {
 	var bounds = layer.getBounds()
-	var width = meter2deg(100)
+	var boxWidth = 100
+	var trackWidth = 5
 
-	var west = bounds.getWest()
-	var east = bounds.getEast()
-	var north = bounds.getNorth() + meter2deg(5)
-	var south = bounds.getSouth() - meter2deg(5)
+	var [north, west] = addToCoord(
+		[bounds.getNorth(), bounds.getWest()],
+		[trackWidth, 0])
+	var [south, east] = addToCoord(
+		[bounds.getSouth(), bounds.getEast()],
+		[-trackWidth, 0])
 
-	for (var lat=north; lat>south-width; lat-=width+meter2deg(5)) {
-		for (var lng=west; lng<east; lng+=width*2+meter2deg(5)*2) {
-			var box = L.rectangle([[lat,lng],[lat+width,lng+width*2]])
+	for (var lat=north; lat>south; ) {
+		var p1, p2
+		for (var lng=west; lng<east; ) {
+			p1 = [lat, lng]
+			p2 = addToCoord([lat, lng], [-boxWidth,boxWidth])
+			var box = L.rectangle([p1, p2])
 			var intersection = turf.intersect(box.toGeoJSON(), layer.toGeoJSON())
 			if (intersection) {
 				var subdivision = L.geoJSON(intersection, {pointToLayer: ()=>{}})
 				survey(subdivision, intersection, box.getBounds())
 			}
+			p2 = addToCoord(p2, [-trackWidth, trackWidth])
+			lng = p2[1]
 		}
+		lat = p2[0]
 	}
 }
 
 
 // Skravere et område for gjennomsøk
 function survey(layer, geojson, bounds, trackWidth=5) {
-	var width = meter2deg(trackWidth)
-
 	var west = bounds.getWest()
 	var east = bounds.getEast()
 	var north = bounds.getNorth()
@@ -83,7 +95,7 @@ function survey(layer, geojson, bounds, trackWidth=5) {
 	// Lager waypoints
 	var points = []
 	var i=0
-	for (var lat=north; lat>south; lat-=width) {
+	for (var lat=north; lat>south; ) {
 		var line = L.polyline([[lat,west], [lat,east]])
 		var inter = turf.lineIntersect(line.toGeoJSON(), layer.toGeoJSON())
 		var [p1,p2] = inter.features.map(d => {return d.geometry.coordinates})
@@ -94,6 +106,7 @@ function survey(layer, geojson, bounds, trackWidth=5) {
 			points = points.concat(p)
 			i++
 		}
+		lat = addToCoord([lat,west], [-trackWidth,0])[0]
 	}
 
 	// geojson har koordinater speilvendt :(
