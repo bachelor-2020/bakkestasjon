@@ -21,12 +21,13 @@ var layers = {
 	trails: L.layerGroup(),
 	areas: L.layerGroup(),
 	clients: L.layerGroup(),
+	findings: L.layerGroup(),
 }
 
 var map = L.map('map', {
 	center: [59.368750, 10.442077],
 	zoom: 15,
-	layers: [L_satellite, layers.areas, layers.drones, layers.trails, layers.clients]
+	layers: [L_satellite, layers.areas, layers.drones, layers.trails, layers.clients, layers.findings]
 })
 
 
@@ -41,7 +42,8 @@ var overlays = {
 	"Search Areas": layers.areas,
 	"Drones": layers.drones,
 	"Drone trail": layers.trails,
-	"Clients": layers.clients
+	"Clients": layers.clients,
+	"Findings": layers.findings
 }
 
 L.control.layers(baseLayers, overlays).addTo(map)

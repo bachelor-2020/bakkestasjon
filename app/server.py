@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 import pymongo
+from random import randint
 from math import sqrt
 
 myclient = pymongo.MongoClient("mongodb://mongo:27017/")
@@ -332,7 +333,12 @@ def get_partial_trail(drone_id, index):
 # Post funn
 @app.route("/api/findings", methods=["POST"])
 def post_finding():
-    findings.insert_one(request_json)
+    _id = randint(0,100000000)
+    findings.insert_one({
+        "_id": _id,
+        "position": request.json["position"],
+        "image": request.json["image"]
+    })
     return request.json
 
 
@@ -340,9 +346,24 @@ def post_finding():
 # Hent alle funn
 @app.route("/api/findings")
 def get_full_findings():
-    return jsonify(
-        findings = list(findings.find({}))
-    )
+    return jsonify(list(findings.aggregate([
+        { "$project": {
+            "_id": 0,
+            "position": "$position",
+            "image_id": "$_id"
+        }}
+    ])))
+
+
+# Hent spesifisert funn (med bilde)
+@app.route("/api/findings/<finding_id>")
+def get_finding(finding_id):
+    find = findings.find_one({"_id": int(finding_id)})
+    return jsonify({
+        "image_id": int(finding_id),
+        "image": find["image"],
+        "position": find["position"]
+    })
 
 
 app.run(host="0.0.0.0")
